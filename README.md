@@ -5,7 +5,7 @@ travel the milky way
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar System Explorer Prototype</title>
+    <title>Solar System Explorer</title>
     <style>
         body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; background-color: black; }
         canvas { display: block; }
@@ -18,7 +18,7 @@ travel the milky way
             padding: 10px;
             border-radius: 5px;
         }
-        #landButton {
+        #warpButton {
             position: absolute;
             top: 50px;
             left: 10px;
@@ -32,11 +32,11 @@ travel the milky way
 </head>
 <body onload="init()">
 
-<div id="info">Use WASD to move, Mouse to look around | Click "Land" to land on planets</div>
-<button id="landButton" onclick="landOnPlanet()">Land</button>
+<div id="info">Use WASD to move, Mouse to look around | Click "Warp" to travel to a new star</div>
+<button id="warpButton" onclick="warpToSystem()">Warp to Alpha Centauri</button>
 
 <script>
-    let scene, camera, renderer, controls, landed = false;
+    let scene, camera, renderer, landed = false;
     let planets = [];
     let playerSpeed = 5000;
 
@@ -66,9 +66,14 @@ travel the milky way
 
         // Create Sun & Planets
         createPlanet(695700, 'https://upload.wikimedia.org/wikipedia/commons/2/28/Solarsystemscope_texture_2k_sun.jpg', 0);
+        createPlanet(2440, 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Mercury_in_true_color.jpg', 579100);
+        createPlanet(6052, 'https://upload.wikimedia.org/wikipedia/commons/e/e5/Venus-real_color.jpg', 1082000);
         createPlanet(6371, 'https://upload.wikimedia.org/wikipedia/commons/8/83/Earthmap1000x500.jpg', 1500000);
         createPlanet(3389, 'https://upload.wikimedia.org/wikipedia/commons/0/02/OSIRIS_Mars_true_color.jpg', 2279000);
         createPlanet(69911, 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Jupiter_New_Horizons.jpg', 7785000);
+        createPlanet(58232, 'https://upload.wikimedia.org/wikipedia/commons/2/29/Saturn-true-color.jpg', 14340000);
+        createPlanet(25362, 'https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg', 28710000);
+        createPlanet(24622, 'https://upload.wikimedia.org/wikipedia/commons/5/56/Neptune_Full.jpg', 44950000);
 
         // Camera starts near Earth
         camera.position.set(1500500, 0, 200000);
@@ -104,31 +109,9 @@ travel the milky way
             if (move.right) camera.position.x += playerSpeed;
         }
 
-        function checkLanding() {
-            let landedPlanet = null;
-            planets.forEach((planet) => {
-                let dist = camera.position.distanceTo(planet.mesh.position);
-                if (dist < planet.mesh.geometry.parameters.radius * 1.5) {
-                    landedPlanet = planet;
-                }
-            });
-
-            return landedPlanet;
-        }
-
-        function landOnPlanet() {
-            let planet = checkLanding();
-            if (planet) {
-                landed = true;
-                camera.position.set(planet.position + 500, 0, 0);
-                camera.lookAt(planet.mesh.position);
-
-                if (planet.mesh.geometry.parameters.radius === 6371) {
-                    window.location.href = "https://earth.google.com/web/";
-                }
-            } else {
-                alert("Get closer to a planet to land!");
-            }
+        function warpToSystem() {
+            alert("Warping to Alpha Centauri...");
+            camera.position.set(4.3 * 9460730472580, 0, 0); // Moves 4.3 light-years away
         }
 
         function animate() {
@@ -136,12 +119,6 @@ travel the milky way
             updateMovement();
             renderer.render(scene, camera);
         }
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
 
         animate();
     }
